@@ -1,609 +1,316 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Turning Complexity Into Simplicity</title>
-<style>
-  :root{
-    --paper:#ffffff;
-    --mist:#f2f1f5;
-    --ink:#1a1418;
-    --ink-soft:#57525f;
-    --charcoal:#302e35;
-    --void:#111113;
-    --signal:#0c71c3;
-    --signal-bright:#2ea3f2;
-    --font-display:'Montserrat',Helvetica,Arial,sans-serif;
-    --font-body:'Open Sans',Helvetica,Arial,sans-serif;
-    --font-accent:'Source Serif 4',Georgia,'Times New Roman',serif;
-  }
-
-  *{box-sizing:border-box;}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:var(--font-body);
-    font-size:1.0625rem;
-    line-height:1.7;
-    -webkit-font-smoothing:antialiased;
-  }
-  img{max-width:100%;}
-  h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;}
-  p{margin:0;}
-  a{color:var(--signal);text-decoration:none;background-image:linear-gradient(var(--signal),var(--signal));background-repeat:no-repeat;background-size:0% 1px;background-position:0 100%;transition:background-size .35s ease;}
-  a:hover, a:focus-visible{background-size:100% 1px;}
-  a:focus-visible{outline:2px solid var(--signal-bright);outline-offset:3px;}
-
-  .kicker{
-    font-family:var(--font-display);
-    font-weight:700;
-    font-size:.95rem;
-    letter-spacing:.1em;
-    text-transform:uppercase;
-    color:var(--signal);
-  }
-  .beat--charcoal .kicker, .beat--void .kicker{color:var(--signal-bright);}
-
-  .wrap{max-width:1180px;margin:0 auto;padding-inline:24px;}
-  @media(min-width:900px){.wrap{padding-inline:56px;}}
-
-  .beat{position:relative;padding-block:88px;}
-  @media(min-width:900px){.beat{padding-block:132px;}}
-  .beat--light{background:var(--paper);color:var(--ink);}
-  .beat--mist{background:var(--mist);color:var(--ink);}
-  .beat--charcoal{background:var(--charcoal);color:#f4f2f6;}
-  .beat--void{background:var(--void);color:#f4f2f6;}
-  .beat--charcoal, .beat--void{background-image:
-    radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);
-    background-size:22px 22px;
-  }
-  .beat--charcoal p, .beat--void p{color:#cfcbd6;}
-
-  .beat__grid{display:grid;grid-template-columns:1fr;}
-
-  .content{min-width:0;}
-  .content > * + *{margin-top:20px;}
-
-  h2.headline{font-size:clamp(1.9rem,3.6vw,2.6rem);font-weight:700;letter-spacing:-.01em;line-height:1.25;max-width:22ch;}
-  .lede{font-family:var(--font-display);font-weight:500;font-size:clamp(1.15rem,1.6vw,1.35rem);color:var(--ink-soft);max-width:52ch;}
-  .beat--charcoal .lede, .beat--void .lede{color:#d8d4e0;}
-  .prose{max-width:62ch;font-size:1.0625rem;}
-  .prose strong{color:var(--ink);font-weight:700;}
-  .beat--charcoal .prose strong, .beat--void .prose strong{color:#fff;}
-  .prose--tight{margin-top:12px;}
-
-  .statement{
-    font-family:var(--font-display);
-    font-weight:800;
-    letter-spacing:-.02em;
-    line-height:1.08;
-    font-size:clamp(2.1rem,5.4vw,3.4rem);
-    max-width:18ch;
-  }
-  .statement--mega{font-size:clamp(2.6rem,7.2vw,4.6rem);max-width:14ch;}
-  .statement--minor{font-family:var(--font-display);font-weight:800;letter-spacing:-.01em;line-height:1.15;font-size:clamp(1.6rem,3vw,2.1rem);max-width:20ch;}
-  .statement--sub{font-family:var(--font-display);font-weight:600;font-size:clamp(1.15rem,1.8vw,1.4rem);color:var(--ink-soft);max-width:44ch;}
-
-  h3.subhead{font-family:var(--font-display);font-weight:800;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);}
-  .beat--charcoal h3.subhead, .beat--void h3.subhead{color:#f4f2f6;}
-  h3.punch{font-family:var(--font-display);font-weight:700;font-size:1.2rem;letter-spacing:-.005em;max-width:44ch;border-left:3px solid var(--signal);padding-left:18px;}
-  .beat--charcoal h3.punch, .beat--void h3.punch{border-left-color:var(--signal-bright);}
-  h3.reflect{font-family:var(--font-accent);font-style:italic;font-weight:600;font-size:clamp(1.5rem,2.6vw,1.9rem);letter-spacing:0;color:var(--ink);max-width:40ch;}
-  .beat--charcoal h3.reflect, .beat--void h3.reflect{color:#d8d4e0;}
-
-  /* editorial accent: a third, serif voice marks interpretation/insight against the operational sans */
-  em.accent, .statement em, h2.headline em, .hero h1 em{
-    font-family:var(--font-accent);
-    font-style:italic;
-    font-weight:500;
-    color:var(--ink);
-  }
-  .beat--charcoal em.accent, .beat--void em.accent,
-  .beat--charcoal .statement em, .beat--void .statement em,
-  .beat--charcoal h2.headline em, .beat--void h2.headline em{color:#f4f2f6;}
-
-  /* Hero */
-  .hero{padding-block:96px 108px;}
-  @media(min-width:900px){.hero{padding-block:64px 132px;}}
-  .hero .wrap{display:grid;gap:28px;max-width:920px;}
-  .hero h1{font-size:clamp(2.6rem,6.2vw,4.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.04;}
-  .hero .lede{max-width:44ch;}
-  .hero .prose{max-width:56ch;color:var(--ink-soft);}
-  [data-anim]{opacity:1;transform:none;}
-  [data-anim].run{animation:rise .8s cubic-bezier(.16,.8,.24,1) both;}
-  @keyframes rise{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
-  .hero-lead{font-family:var(--font-display);font-weight:500;font-size:clamp(1.15rem,1.6vw,1.3rem);color:var(--ink);max-width:56ch;}
-  .hero-minor{font-size:.95rem;color:var(--ink-soft);max-width:52ch;}
-
-  /* reveal-on-scroll (progressive enhancement; visible by default) */
-  [data-reveal]{opacity:1;transform:none;}
-  [data-reveal].js-pre{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.16,.8,.24,1),transform .7s cubic-bezier(.16,.8,.24,1);}
-  [data-reveal].js-pre.is-visible{opacity:1;transform:none;}
-
-  /* Loop / process steps */
-  .loop{list-style:none;margin:0;padding:0;display:grid;gap:0;}
-  .loop li{padding-block:18px;border-top:1px solid rgba(26,20,24,.12);}
-  .loop li:first-child{border-top:none;}
-  .loop li:last-child{border-bottom:1px solid rgba(26,20,24,.12);}
-  .loop .word{font-family:var(--font-display);font-weight:800;letter-spacing:.06em;font-size:1rem;color:var(--signal);}
-  .loop .desc{color:var(--ink-soft);margin-top:6px;max-width:56ch;}
-
-  .equation{
-    font-family:var(--font-display);
-    font-weight:700;
-    letter-spacing:.06em;
-    text-transform:uppercase;
-    font-size:clamp(.72rem,1.2vw,.85rem);
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    gap:.5em .9em;
-    color:var(--ink);
-    border:1px solid rgba(26,20,24,.16);
-    padding:18px 22px;
-  }
-  .equation span.op{color:var(--signal);font-weight:400;text-transform:none;letter-spacing:0;font-size:1.15em;}
-  .beat--charcoal .equation, .beat--void .equation{color:#f4f2f6;border-color:rgba(255,255,255,.22);}
-  .beat--charcoal .equation span.op, .beat--void .equation span.op{color:var(--signal-bright);}
-
-  /* Principles */
-  .principle{display:grid;gap:18px;padding-block:56px;}
-  .principle:first-of-type{padding-top:56px;}
-  .principle:last-of-type{padding-bottom:0;}
-  @media(min-width:760px){
-    .principle{grid-template-columns:auto 1fr;align-items:start;gap:32px;}
-    .principle--alt{grid-template-columns:1fr auto;}
-    .principle--alt .principle__num{order:2;text-align:right;}
-  }
-  .principle__num{font-family:var(--font-display);font-weight:800;font-size:clamp(3.4rem,7vw,5.6rem);line-height:1;color:rgba(26,20,24,.09);}
-  .principle__title{font-family:var(--font-display);font-weight:700;font-size:1.25rem;letter-spacing:.02em;text-transform:uppercase;margin-bottom:10px;}
-  .principle__lead{font-family:var(--font-display);font-weight:700;font-size:1.05rem;margin-bottom:6px;}
-  .principle__foot{margin-top:16px;font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--ink);border-left:3px solid var(--signal);padding-left:18px;max-width:44ch;}
-  .beat--charcoal .principle__foot, .beat--void .principle__foot{color:#f4f2f6;border-left-color:var(--signal-bright);}
-
-  /* index lists (opportunity / areas of work) */
-  .index-list{list-style:none;margin:0;padding:0;}
-  .index-list li{display:grid;grid-template-columns:1fr;gap:6px;padding-block:22px;border-top:1px solid rgba(26,20,24,.14);}
-  .index-list li:last-child{border-bottom:1px solid rgba(26,20,24,.14);}
-  @media(min-width:640px){.index-list li{grid-template-columns:minmax(0,260px) 1fr;gap:24px;}}
-  .index-list .term{font-family:var(--font-display);font-weight:700;letter-spacing:.02em;}
-  .index-list .desc{color:var(--ink-soft);}
-  .beat--charcoal .index-list .desc, .beat--void .index-list .desc{color:#cfcbd6;}
-  .beat--charcoal .index-list li, .beat--void .index-list li{border-color:rgba(255,255,255,.16);}
-
-  /* flow diagram (lead intake) */
-  .flow{list-style:none;margin:0;padding:0;}
-  .flow li{position:relative;padding:0 0 30px 30px;border-left:2px solid rgba(26,20,24,.16);}
-  .flow li:last-child{padding-bottom:0;border-left-color:transparent;}
-  .flow li::before{content:'';position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--signal);}
-  .flow .term{font-family:var(--font-display);font-weight:800;letter-spacing:.06em;font-size:.92rem;text-transform:uppercase;color:var(--ink);}
-  .flow .desc{color:var(--ink-soft);margin-top:6px;max-width:52ch;}
-
-  /* elevate process blocks */
-  .elevate{display:grid;gap:0;}
-  .elevate__item{padding-block:48px;}
-  .elevate__item:first-child{padding-top:0;}
-  .elevate__item > * + *{margin-top:14px;}
-  .elevate__item .prose, .elevate__item h3.punch, .elevate__item .bullets li, .elevate__item h2.headline{max-width:none;}
-
-  .bullets{list-style:none;margin:0;padding:0;display:grid;gap:10px;}
-  .bullets li{position:relative;padding-left:22px;max-width:56ch;}
-  .bullets li::before{content:'';position:absolute;left:0;top:.7em;width:9px;height:2px;background:var(--signal);}
-  .beat--charcoal .bullets li::before, .beat--void .bullets li::before{background:var(--signal-bright);}
-
-  .tags{display:flex;flex-wrap:wrap;gap:.4em .9em;font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
-  .tags span:not(:last-child)::after{content:'\00b7';margin-left:.9em;color:rgba(26,20,24,.35);}
-
-  .chips{display:flex;flex-wrap:wrap;gap:10px;}
-  .chips span{display:inline-flex;align-items:center;padding:7px 14px;border:1px solid rgba(26,20,24,.22);font-family:var(--font-display);font-weight:600;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);}
-  .beat--charcoal .chips span, .beat--void .chips span{border-color:rgba(255,255,255,.3);color:#f4f2f6;}
-
-  .callout{border:1px solid rgba(26,20,24,.2);padding:22px 26px;}
-  .callout p{font-family:var(--font-display);font-weight:700;color:var(--ink);}
-  .beat--charcoal .callout, .beat--void .callout{border-color:rgba(255,255,255,.28);}
-  .beat--charcoal .callout p, .beat--void .callout p{color:var(--signal-bright);}
-
-  .split{display:grid;gap:40px;border:1px solid rgba(26,20,24,.16);padding:32px;}
-  @media(min-width:760px){
-    .split{grid-template-columns:1fr 1fr;gap:0;padding:44px;}
-    .split > div{padding-inline:36px;}
-    .split > div:first-child{padding-left:0;}
-    .split > div:last-child{padding-right:0;border-left:1px solid rgba(26,20,24,.16);}
-  }
-  .split > div > * + *{margin-top:20px;}
-  .beat--charcoal .split, .beat--void .split{border-color:rgba(255,255,255,.22);}
-  .beat--charcoal .split > div:last-child, .beat--void .split > div:last-child{border-left-color:rgba(255,255,255,.22);}
-
-  @media (prefers-reduced-motion: reduce){
-    *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important;}
-  }
-
-  .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--signal);z-index:50;}
-</style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
-
-<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-<main>
-<header aria-label="Introduction" class="hero beat beat--light">
-  <div class="wrap">
-    <p class="kicker" data-anim style="animation-delay:.05s">Senior UX design for complex products and workflows</p>
-    <h1 data-anim style="animation-delay:.2s">Turning Complexity Into <em>Simplicity</em></h1>
-    <div class="prose" data-anim style="animation-delay:.4s">
-      <p class="hero-lead">My recent work at Verisk involved enterprise software connecting complex workflows, people, information, and business processes.</p>
-      <p class="hero-minor" style="margin-top:14px;">Because the products are proprietary, I don't reproduce Verisk screens or internal artifacts here.</p>
-      <p class="hero-minor" style="margin-top:10px;">Instead, this brief shows how I approach complex product problems, what research taught us, and how those insights became design decisions.</p>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Carl Ishii's overview of senior UX work across XactRestore at Verisk, including enterprise workflows, Lead Intake, task coordination, and product design principles.">
+  <meta property="og:title" content="Carl Ishii | Verisk UX Work Brief">
+  <meta property="og:description" content="Turning complex enterprise workflows into coherent product experiences across XactRestore at Verisk.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mrishii.github.io/xactrestore-brief/">
+  <title>Carl Ishii | Verisk UX Work Brief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&family=Source+Serif+4:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:#fff; --mist:#f4f5f7; --mist-blue:#edf5fb; --ink:#1a171b;
+      --ink-soft:#58535f; --charcoal:#2f2d34; --void:#111114; --line:#d9d7dd;
+      --signal:#0868b2; --signal-bright:#4db7ff;
+      --font-display:'Montserrat',Helvetica,Arial,sans-serif;
+      --font-body:'Open Sans',Helvetica,Arial,sans-serif;
+      --font-accent:'Source Serif 4',Georgia,'Times New Roman',serif;
+      --space-1:8px; --space-2:8px; --space-3:16px; --space-4:24px;
+      --space-5:32px; --space-6:48px; --space-7:64px; --space-8:80px; --space-9:96px;
+      --content:1120px; --reading:66ch; --page-gutter:80px;
+      --group-gap:80px; --section-gap:112px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:1rem;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    h1,h2,h3{margin:0;font-family:var(--font-display);text-wrap:balance}
+    p,ul,ol,dl{margin:0}
+    a{color:inherit}
+    a:focus-visible{outline:3px solid var(--signal-bright);outline-offset:4px}
+    ::selection{background:#bfe4fb;color:var(--ink)}
+    .skip-link{position:fixed;left:var(--space-3);top:var(--space-3);z-index:100;transform:translateY(-160%);background:var(--void);color:#fff;padding:var(--space-2) var(--space-3);font-weight:700;transition:transform .2s ease}
+    .skip-link:focus{transform:translateY(0)}
+    .site-header{position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(26,23,27,.12);background:rgba(255,255,255,.94);backdrop-filter:blur(12px)}
+    .site-header__inner{width:min(calc(100% - var(--page-gutter)),var(--content));min-height:64px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+    .brand{display:inline-flex;align-items:baseline;gap:var(--space-2);text-decoration:none;font-family:var(--font-display);font-weight:800;letter-spacing:-.01em}
+    .brand span{color:var(--ink-soft);font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .site-nav{display:flex;align-items:center;gap:var(--space-4)}
+    .site-nav a{color:var(--ink-soft);font-family:var(--font-display);font-size:.75rem;font-weight:700;letter-spacing:.04em;text-decoration:none;text-transform:uppercase}
+    .site-nav a:hover{color:var(--signal)}
+    .site-nav .nav-cta{color:var(--signal)}
+    .wrap{width:min(calc(100% - var(--page-gutter)),var(--content));margin-inline:auto}
+    .reading{max-width:var(--reading)}
+    .section{padding-block:var(--section-gap);scroll-margin-top:64px}
+    #approach{padding-bottom:0}
+    .section--mist{background:var(--mist)}
+    .section--blue{background:var(--mist-blue)}
+    .section--dark{background-color:var(--charcoal);background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.055) 1px,transparent 0);background-size:22px 22px;color:#f7f5f8}
+    .section--void{background:var(--void);color:#f7f5f8}
+    .section--dark p,.section--void p{color:#d7d3db}
+    .eyebrow{margin-bottom:var(--space-3);color:var(--signal);font-family:var(--font-display);font-size:.75rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    .section--dark .eyebrow,.section--void .eyebrow{color:var(--signal-bright)}
+    .section-title{max-width:22ch;font-size:clamp(2rem,4vw,3.25rem);line-height:1.12;letter-spacing:-.025em}
+    .section-intro{max-width:60ch;margin-top:var(--space-4);color:var(--ink-soft);font-size:clamp(1.05rem,1.5vw,1.2rem)}
+    .section--dark .section-intro,.section--void .section-intro{color:#d7d3db}
+    .accent{font-family:var(--font-accent);font-style:italic;font-weight:500}
+    .hero{padding-block:clamp(80px,10vw,120px)}
+    .hero__inner{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:var(--space-7);align-items:end}
+    .hero h1{max-width:13ch;font-size:clamp(3rem,7vw,5.75rem);line-height:.98;letter-spacing:-.045em}
+    .hero__lead{max-width:48ch;margin-top:var(--space-5);font-family:var(--font-display);font-size:clamp(1.1rem,1.7vw,1.35rem);font-weight:600;line-height:1.5}
+    .hero__note{margin-top:var(--space-4);max-width:62ch;color:var(--ink-soft)}
+    .hero__actions{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:var(--space-5)}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:var(--space-2) var(--space-3);border:1px solid var(--ink);background:var(--ink);color:#fff;font-family:var(--font-display);font-size:.82rem;font-weight:700;letter-spacing:.04em;text-decoration:none;text-transform:uppercase;transition:transform .2s ease,background .2s ease}
+    .button:hover{transform:translateY(-2px);background:var(--signal);border-color:var(--signal)}
+    .button--secondary{background:transparent;color:var(--ink)}
+    .button--secondary:hover{color:#fff}
+    .facts{display:grid;gap:0;border-top:3px solid var(--signal)}
+    .facts div{padding:var(--space-3) 0;border-bottom:1px solid var(--line)}
+    .facts dt{color:var(--ink-soft);font-family:var(--font-display);font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+    .facts dd{margin:var(--space-2) 0 0;font-family:var(--font-display);font-size:.95rem;font-weight:700}
+    .point{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:var(--space-7);align-items:center}
+    .point__statement{font-family:var(--font-display);font-size:clamp(2.1rem,5vw,4rem);font-weight:800;letter-spacing:-.035em;line-height:1.06}
+    .point__copy{max-width:58ch}
+    .point__copy p+p{margin-top:var(--space-3)}
+    .work-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-5);align-items:stretch}
+    .card{border:1px solid var(--line);background:var(--paper);padding:var(--space-5)}
+    .card__number{color:var(--signal);font-family:var(--font-display);font-size:.72rem;font-weight:800;letter-spacing:.12em}
+    .card h3{margin-top:var(--space-2);font-size:1.25rem;line-height:1.3}
+    .card p{margin-top:var(--space-3);color:var(--ink-soft)}
+    .feature-list{list-style:none;margin-top:var(--space-4);padding:0;display:grid;gap:var(--space-2)}
+    .feature-list li{position:relative;padding-left:var(--space-3)}
+    .feature-list li::before{content:'';position:absolute;left:0;top:.72em;width:8px;height:2px;background:var(--signal)}
+    .capabilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-5)}
+    .capability{padding:var(--space-5);border-top:3px solid var(--signal);background:#fff}
+    .capability h3{font-size:1.15rem}
+    .capability p{margin-top:var(--space-3);color:var(--ink-soft)}
+    .example-header__copy{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-7);align-items:start;margin-top:var(--space-5)}
+    .example-header__copy .section-intro{margin-top:0}
+    .status-note{margin:0;padding:0;color:var(--ink-soft);font-family:var(--font-body);font-size:1rem;font-style:normal;line-height:1.65}
+    .status-note strong{display:block;margin-bottom:var(--space-2);color:var(--ink);font-family:var(--font-display);font-size:.75rem;font-style:normal;letter-spacing:.08em;text-transform:uppercase}
+    .status-note--quote{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:calc(var(--space-2) / 2);padding-top:0;text-indent:0}
+    .status-note--quote::before{content:'“';grid-column:1;grid-row:1;transform:translateY(var(--space-1));color:var(--ink);font-family:var(--font-accent);font-size:3rem;font-style:normal;line-height:.55}
+    .status-note--quote span{grid-column:2;grid-row:1}
+    .team{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--space-5)}
+    .team span{border:1px solid var(--line);padding:var(--space-2) var(--space-3);font-family:var(--font-display);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .insight{text-align:center}
+    .insight__setup{font-family:var(--font-display);font-weight:700}
+    .insight__statement{max-width:18ch;margin:var(--space-4) auto 0;font-family:var(--font-display);font-size:clamp(2.4rem,6vw,5rem);font-weight:800;letter-spacing:-.045em;line-height:1.02}
+    .insight__support{max-width:62ch;margin:var(--space-5) auto 0}
+    .decision{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:var(--space-6);border:1px solid var(--line)}
+    .decision__side{padding:var(--space-5)}
+    .decision__side+.decision__side{border-left:1px solid var(--line)}
+    .decision__side h3{font-size:clamp(1.35rem,2.2vw,1.8rem);line-height:1.3}
+    .decision__side p{margin-top:var(--space-3);color:var(--ink-soft)}
+    .question{margin-top:var(--space-4);font-family:var(--font-accent);font-size:clamp(1.6rem,3vw,2.2rem);font-style:italic;font-weight:600;line-height:1.2}
+    .chips{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-4)}
+    .chips span{border:1px solid var(--line);padding:var(--space-2) var(--space-3);font-family:var(--font-display);font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+    .flow{list-style:none;margin:var(--space-9) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);row-gap:var(--space-5)}
+    .flow li{position:relative;min-width:0;padding:var(--space-5) var(--space-2) 0 0}
+    .flow li::before{content:'';position:absolute;left:0;top:8px;width:12px;height:12px;border-radius:50%;background:var(--signal);z-index:2}
+    .flow li::after{content:'';position:absolute;left:10px;right:0;top:13px;height:2px;background:#bfd1df}
+    .flow strong{display:block;font-family:var(--font-display);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase}
+    .flow span{display:block;margin-top:var(--space-2);color:var(--ink-soft);font-size:.85rem}
+    .evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3);margin-top:var(--group-gap)}
+    .evidence-card{min-height:184px;padding:var(--space-4);border-top:3px solid var(--signal);background:var(--mist)}
+    .evidence-card h3{font-size:1rem;line-height:1.35}
+    .evidence-card p{margin-top:var(--space-2);color:var(--ink-soft);font-size:.92rem}
+    .task-system{display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-4);align-items:stretch;margin-top:var(--space-6)}
+    .task-role{padding:var(--space-5);border:1px solid var(--line);background:#fff}
+    .task-role h3{font-size:1.25rem}
+    .task-role p{margin-top:var(--space-3);color:var(--ink-soft)}
+    .task-bridge{align-self:center;color:var(--signal);font-family:var(--font-display);font-size:1.5rem;font-weight:800}
+    .task-foot{max-width:66ch;margin-top:var(--space-5);color:var(--ink-soft)}
+    .opportunity-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:var(--space-7);align-items:start}
+    .opportunity-list{list-style:none;padding:0;border-top:1px solid rgba(255,255,255,.2)}
+    .opportunity-list li{padding:var(--space-3) 0;border-bottom:1px solid rgba(255,255,255,.2)}
+    .opportunity-list strong{display:block;color:#fff;font-family:var(--font-display)}
+    .opportunity-list span{display:block;margin-top:var(--space-2);color:#d7d3db}
+    .evidence-note{margin-top:var(--space-4);padding:var(--space-4);border:1px solid rgba(255,255,255,.25);color:var(--signal-bright);font-family:var(--font-display);font-size:.9rem;font-weight:700}
+    .process-lens{margin-top:var(--space-6);padding:var(--space-4);border:1px solid var(--line);text-align:center;font-family:var(--font-display);font-size:clamp(.9rem,2vw,1.15rem);font-weight:800;letter-spacing:.05em}
+    .process-lens span{color:var(--signal);margin-inline:var(--space-2)}
+    .process{list-style:none;margin:var(--space-5) 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}
+    .process li{min-height:168px;padding:var(--space-4);background:var(--mist);border-top:3px solid transparent}
+    .process strong{color:var(--signal);font-family:var(--font-display);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+    .process p{margin-top:var(--space-2);color:var(--ink-soft)}
+    .principles{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);margin-top:var(--group-gap)}
+    .principle{padding-top:var(--space-4);border-top:1px solid var(--line)}
+    .principle h3{font-size:1.05rem;text-transform:uppercase}
+    .principle p{margin-top:var(--space-3);color:var(--ink-soft)}
+    .principle .principle__lead{color:var(--ink);font-family:var(--font-display);font-weight:700}
+    .success-connection{margin-top:var(--group-gap);padding-block:var(--space-7);background:var(--mist-blue)}
+    .success-connection__inner{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:var(--space-7);align-items:center;width:min(calc(100% - var(--page-gutter)),var(--content));margin-inline:auto}
+    .success-connection h3{max-width:11ch;font-size:clamp(2.2rem,4.5vw,4.25rem);line-height:1.03;letter-spacing:-.035em}
+    .success-connection__copy{max-width:58ch}
+    .success-connection__copy p{color:var(--ink);font-size:1rem}
+    .success-connection__copy p+p{margin-top:var(--space-4)}
+    .closing{text-align:center}
+    .closing h2{max-width:18ch;margin-inline:auto;font-size:clamp(2.35rem,5.5vw,4.8rem);line-height:1.05;letter-spacing:-.04em}
+    .closing p{max-width:64ch;margin:var(--space-5) auto 0}
+    .closing-principles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-3);margin-top:var(--space-7);text-align:left}
+    .closing-principle{min-height:280px;padding:var(--space-4);border:1px solid rgba(255,255,255,.14);background:#1a1a1f}
+    .closing-principle__number{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--signal-bright);border-radius:50%;color:var(--signal-bright);font-family:var(--font-display);font-size:.72rem;font-weight:800;letter-spacing:.08em}
+    .closing-principle h3{margin-top:var(--space-5);font-size:1rem;line-height:1.35;text-transform:uppercase}
+    .closing .closing-principle p{max-width:none;margin:var(--space-2) 0 0;color:#d7d3db}
+    .card,.capability,.evidence-card,.task-role,.process li,.closing-principle{border-top:3px solid transparent;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+    .principle{transition:border-color .2s ease}
+    @media(hover:hover){
+      .card:hover,.capability:hover,.evidence-card:hover,.task-role:hover,.process li:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(26,23,27,.1)}
+      .closing-principle:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.24)}
+    }
+    .closing .hero__actions{justify-content:center;margin-top:var(--space-7)}
+    .section--void .button{background:#fff;border-color:#fff;color:var(--void)}
+    .section--void .button:hover{background:var(--signal-bright);border-color:var(--signal-bright)}
+    .section--void .button--secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
+    .site-footer{padding-block:var(--space-4);border-top:1px solid #2b2930;background:var(--void);color:#bdb8c3}
+    .site-footer .wrap{display:flex;justify-content:space-between;gap:var(--space-4);font-size:.8rem}
+    .site-footer a{color:#fff}
+    @media(max-width:920px){
+      .site-nav a:not(.nav-cta){display:none}
+      .hero__inner,.point,.opportunity-grid{grid-template-columns:1fr;gap:var(--space-5)}
+      .example-header__copy{grid-template-columns:1fr;gap:var(--space-5)}
+      .work-grid{grid-template-columns:1fr 1fr}.work-grid .card:first-child{grid-column:1/-1}
+      .flow{grid-template-columns:repeat(2,1fr);row-gap:var(--space-4)}
+      .evidence-grid{grid-template-columns:repeat(2,1fr)}
+      .process{grid-template-columns:repeat(2,1fr)}.principles{grid-template-columns:1fr}
+      .success-connection__inner{grid-template-columns:1fr;gap:var(--space-5)}
+      .closing-principles{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:640px){
+      :root{--page-gutter:48px;--group-gap:64px;--section-gap:72px}
+      .section{padding-block:var(--section-gap)}
+      .site-header__inner{min-height:56px}.brand span{display:none}
+      .hero{padding-block:var(--space-7)}.hero h1{font-size:clamp(2.75rem,14vw,4.4rem)}
+      .work-grid,.capabilities,.decision,.process,.evidence-grid{grid-template-columns:1fr}.work-grid .card:first-child{grid-column:auto}
+      .decision__side+.decision__side{border-left:0;border-top:1px solid var(--line)}
+      .flow{grid-template-columns:1fr;margin-top:var(--group-gap)}
+      .flow li{padding:0 0 var(--space-5) var(--space-4)}.flow li::before{left:0;top:var(--space-1)}
+      .flow li::after{left:5px;top:16px;width:2px;height:calc(100% - 8px);display:block!important}.flow li:last-child::after{display:none!important}
+      .task-system{grid-template-columns:1fr}.task-bridge{transform:rotate(90deg);justify-self:center}
+      .success-connection{padding-block:var(--space-6)}
+      .closing-principles{grid-template-columns:1fr}
+      .closing-principle{min-height:0}
+      .site-footer .wrap{flex-direction:column}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#top" aria-label="Carl Ishii, back to the top">Carl Ishii <span>Verisk UX Work Brief</span></a>
+      <nav class="site-nav" aria-label="Brief sections">
+        <a href="#work">Work</a><a href="#lead-intake">Lead Intake</a><a href="#approach">Approach</a><a href="https://carlishii.com/ux-ui-resume/">Résumé</a><a class="nav-cta" href="mailto:carl@carlishii.com">Contact</a>
+      </nav>
     </div>
-  </div>
-</header>
-
-<section aria-label="Point of view" class="beat beat--charcoal">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">I Enjoy Making Complex Workflows Feel Simple</p>
-      <p class="prose">The more complicated the system becomes, the more interesting the UX problem becomes.</p>
-      <h3 class="statement" style="margin-top:30px;">Give me the complicated problem.</h3>
-      <p class="prose">I enjoy the work that happens before the answer is obvious: understanding the system, finding the real problem, bringing the right people together, and turning complexity into something users don't have to think about.</p>
-    </div>
-  </div>
-</section>
-
-<section aria-label="My design process" class="beat beat--light">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">My Design Process</p>
-      <h2 class="headline">Design Thinking is the foundation. <em>Senior UX design adds another level of awareness.</em></h2>
-      <p class="prose">I follow the principles of Design Thinking: understand people, define the right problem, explore possibilities, prototype, test, and iterate.</p>
-      <p class="prose">As a Senior UX Designer, I also have to maintain the 10,000-foot view throughout that process.</p>
-
-      <p class="kicker" style="margin-top:32px;text-align:center;color:var(--ink-soft);font-size:.8rem;">It's a loop, not a handoff.</p>
-      <p class="equation" style="margin-top:14px;">Recognize<span class="op">&rarr;</span>Empathize + Discover<span class="op">&rarr;</span>Ideate + Align<span class="op">&rarr;</span>Simplify<span class="op">&rarr;</span>Prototype<span class="op">&rarr;</span>Test<span class="op">&rarr;</span>Ship<span class="op">&rarr;</span>Learn&nbsp;&#8635;</p>
-
-      <ol class="loop" style="margin-top:26px;list-style:none;">
-        <li><div class="word">RECOGNIZE</div><p class="desc">Recognize the problem, along with the product, business goals, technology, constraints, and surrounding system.</p></li>
-        <li><div class="word">EMPATHIZE + DISCOVER</div><p class="desc">We do interviews to learn how users think, learn about their workflows, and how the problem affects them.</p></li>
-        <li><div class="word">IDEATE + ALIGN</div><p class="desc">Explore multiple ways to solve the right problem, bringing user evidence together with Product, Engineering, technology, effort, and business priorities.</p></li>
-        <li><div class="word">SIMPLIFY</div><p class="desc">Remove unnecessary complexity and organize the experience around what the user is trying to accomplish.</p></li>
-        <li><div class="word">PROTOTYPE</div><p class="desc">Turn the idea into something real enough to test.</p></li>
-        <li><div class="word">TEST</div><p class="desc">Put ideas in front of users while they're still inexpensive to change.</p></li>
-        <li><div class="word">SHIP</div><p class="desc">Deliver an intentional, coherent experience, not something that feels unfinished simply because the product will continue evolving.</p></li>
-        <li><div class="word">LEARN</div><p class="desc">Use real-world behavior, feedback, and business results to inform what comes next.</p></li>
-      </ol>
-
-      <p class="kicker" style="margin-top:32px;text-align:center;color:var(--ink-soft);font-size:.8rem;">And throughout that loop, I keep four perspectives in view</p>
-      <p class="equation" style="margin-top:14px;">User<span class="op">&harr;</span>Product<span class="op">&harr;</span>Engineering<span class="op">&harr;</span>Business</p>
-    </div>
-  </div>
-</section>
-
-<section aria-label="Three principles guide my decisions" class="beat beat--mist">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">Three Principles Guide My Decisions</p>
-      <h2 class="headline">The process tells me how to work. <em>These principles help me decide.</em></h2>
-
-      <div class="principle">
-        <div class="principle__num">01</div>
+  </header>
+  <main id="main-content">
+    <header class="hero" id="top">
+      <div class="wrap hero__inner">
         <div>
-          <div class="principle__title">See the whole product</div>
-          <p class="principle__lead">Advocate for the user. Understand the business. Design for both.</p>
-          <p class="prose" style="margin-top:14px;">A feature doesn't exist by itself.</p>
-          <p class="prose" style="margin-top:14px;">I consider user needs, product strategy, technical feasibility, engineering effort, business goals, budget, schedule, and what today's decision may affect tomorrow.</p>
-          <p class="principle__foot">Senior design requires seeing beyond the screen being designed.</p>
+          <p class="eyebrow">Carl Ishii · Senior UX Designer</p>
+          <h1>Turning Complexity Into <span class="accent">Simplicity</span></h1>
+          <p class="hero__lead">A brief overview of the enterprise products, workflows, and design decisions I worked on at Verisk.</p>
+          <p class="hero__note">Because the products are proprietary, I do not reproduce Verisk screens or internal artifacts here. This is not a conventional case study. It shows what I worked on, how I approached complex product problems, and why I made selected design decisions.</p>
+          <div class="hero__actions"><a class="button" href="#work">Explore the work</a><a class="button button--secondary" href="https://carlishii.com/ux-ui-resume/">View résumé</a></div>
+        </div>
+        <dl class="facts" aria-label="Verisk work at a glance">
+          <div><dt>Product</dt><dd>XactRestore</dd></div><div><dt>Focus</dt><dd>Complex enterprise workflows</dd></div><div><dt>Role</dt><dd>Senior UX Designer</dd></div><div><dt>Core team</dt><dd>Product Manager, Lead Engineer, Engineer, UX</dd></div>
+        </dl>
+      </div>
+    </header>
+    <section class="section section--dark" aria-labelledby="point-title">
+      <div class="wrap point" data-reveal>
+        <h2 class="point__statement" id="point-title">Give me the complicated problem.</h2>
+        <div class="point__copy"><p>The more complicated the system becomes, the more interesting the UX problem becomes.</p><p>I enjoy the work that happens before the answer is obvious: understanding the system, finding the real problem, bringing the right people together, and turning complexity into something users do not have to think about.</p></div>
+      </div>
+    </section>
+    <section class="section section--mist" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <p class="eyebrow">What I worked on at Verisk</p>
+        <h2 class="section-title" id="work-title">More than one workflow. <span class="accent">One connected product.</span></h2>
+        <p class="section-intro">My work extended from project operations and financial information to customer records, user administration, permissions, intake, office task coordination, and field-technician workflows.</p>
+        <p class="eyebrow" style="margin-top:var(--group-gap)">Features, mobile and desktop</p>
+        <div class="work-grid" data-reveal>
+          <article class="card"><p class="card__number">01</p><h3>Lead Intake and Management</h3><p>Captured the information needed to create the customer account, contact, and project, then moved the new lead into management and automation.</p></article>
+          <article class="card"><p class="card__number">02</p><h3>Project Management</h3><p>Supported project status, assignment, key dates, customer information, pricing, totals, notes, and the information needed to manage the work.</p></article>
+          <article class="card"><p class="card__number">03</p><h3>Project History</h3><p>Provided a detailed record of project changes, including when the change occurred, who made it, what was affected, and what action was taken.</p></article>
+          <article class="card"><p class="card__number">04</p><h3>CRM: Account, Vendor, Contacts</h3><p>Created and edited customer and vendor accounts, associated contacts and properties, maintained notes, and connected relevant projects.</p></article>
+          <article class="card"><p class="card__number">05</p><h3>User Management</h3><p>Gave administrators the ability to create and edit users, maintain employee information, define roles, and manage permissions.</p></article>
+          <article class="card"><p class="card__number">06</p><h3>Task Management</h3><p>Helped administrators create, prioritize, and manage project tasks while keeping assigned technicians informed of changes.</p></article>
+          <article class="card"><p class="card__number">07</p><h3>Files and Attachments</h3><p>Supported project photos and documents, custom folders, file details and notes, and the documentation needed throughout the job.</p></article>
+        </div>
+        <p class="eyebrow" style="margin-top:var(--group-gap)">Workflows, mobile and desktop</p>
+        <div class="capabilities" data-reveal>
+          <article class="capability"><h3>Lead Intake and Management</h3><p>Started with the job-site address, connected the people and property, captured the loss, verified the information, created the project, and moved the lead into management.</p></article>
+          <article class="capability"><h3>Administrative and Management Workflows</h3><p>Supported the administrative work required to manage customers, users, projects, priorities, assignments, tasks, and changes.</p></article>
+          <article class="capability"><h3>Field Technician Property and Job-Site Experiences</h3><p>Prioritized the property, project, route, schedule, and task information technicians needed while working in the field.</p></article>
+          <article class="capability"><h3>Documentation, and Task Management</h3><p>Connected assigned work with field documentation, photos, project information, completed tasks, and instrument readings.</p></article>
+          <article class="capability"><h3>Project Management</h3><p>Connected project status, assignment, important dates, customer details, pricing, totals, files, history, and active work.</p></article>
+          <article class="capability"><h3>Automation and Integrations</h3><p>Used verified intake information to create the project, notify personnel, assign a technician, begin downstream workflows, and support connected applications.</p></article>
+          <article class="capability"><h3>Accessibility and Product Consistency</h3><p>Applied WCAG 2.2 considerations, accessible color tokens, reusable interaction patterns, and consistent behavior across the product.</p></article>
         </div>
       </div>
-
-      <div class="principle principle--alt">
-        <div class="principle__num">02</div>
-        <div>
-          <div class="principle__title">Make complexity feel simple</div>
-          <p class="principle__lead">The system can be complicated. The experience shouldn't be.</p>
-          <ul class="bullets" style="margin-top:14px;">
-            <li>What does the user need now?</li>
-            <li>What can wait?</li>
-            <li>What can the system anticipate?</li>
-            <li>What can we eliminate?</li>
-            <li>Where will people hesitate or make mistakes?</li>
-          </ul>
-          <p class="prose" style="margin-top:14px;">I organize the experience around the user's goals and mental model, not the complexity of the system underneath it.</p>
-          <h3 class="punch" style="margin-top:16px;">Keep the capability. Remove the burden.</h3>
+    </section>
+    <section class="section" id="lead-intake" aria-labelledby="lead-title">
+      <div class="wrap">
+        <div class="example-header">
+          <div><p class="eyebrow">Implementation-ready design</p><h2 class="section-title" id="lead-title">XactRestore <span class="accent">Lead Intake</span></h2><div class="team" aria-label="Lead Intake team"><span>Product Manager</span><span>Lead Engineer</span><span>Engineer</span><span>Senior UX Designer</span></div></div>
+          <div class="example-header__copy"><p class="section-intro reading">Lead Intake is a guided workflow that helps restoration teams capture and verify the information needed during an initial loss call, from the job-site address and customer relationship to severity, scope, and insurance. It turns that information into an actionable lead that can create a project and begin the next steps. UX, Product, and Engineering worked together throughout the process, combining user research, product and business requirements, and technical knowledge to shape the final experience.</p><p class="status-note"><strong>Delivery status:</strong> The final Lead Intake experience was prepared for Engineering.</p></div>
         </div>
       </div>
-
-      <div class="principle">
-        <div class="principle__num">03</div>
-        <div>
-          <div class="principle__title">Advocate strongly. Hold the solution loosely.</div>
-          <p class="principle__lead">Research gives us evidence. Collaboration gives us better answers.</p>
-          <p class="prose" style="margin-top:14px;">UX should have a strong point of view about the user.</p>
-          <p class="prose" style="margin-top:14px;">That doesn't mean UX owns every answer.</p>
-          <p class="prose" style="margin-top:14px;">I want Product, Engineering, and Design to collaborate and resolve the problem, encouraging open communication, challenging assumptions, sharing expertise, and shaping solutions.</p>
-          <ul class="bullets" style="margin-top:14px;">
-            <li>Challenge assumptions.</li>
-            <li>Surface technical opportunities.</li>
-            <li>Explore alternatives.</li>
-            <li>Solve the problem together.</li>
-          </ul>
-          <p class="prose" style="margin-top:14px;">My responsibility is to advocate for the user, not protect my first design.</p>
-          <h3 class="punch" style="margin-top:16px;">When the team helps discover the solution, they don't simply receive it. They own it, and that shared ownership produces a better product.</h3>
+    </section>
+    <section class="section section--dark insight" aria-labelledby="insight-title">
+      <div class="wrap" data-reveal><p class="insight__setup">Research revealed an important relationship:</p><h2 class="insight__statement" id="insight-title">The property was the constant. <span class="accent">People were not.</span></h2><p class="insight__support">Owners, tenants, property managers, onsite contacts, and insurance relationships could change over time. The job-site address was the finite piece of information they shared, so it became the starting point and the common link between the property, people, projects, and history.</p></div>
+    </section>
+    <section class="section" aria-labelledby="decision-title">
+      <div class="wrap">
+        <div class="example-header">
+          <div><p class="eyebrow">Final Lead Intake experience</p><h2 class="section-title" id="decision-title">A long, complex intake made <span class="accent">guided and actionable.</span></h2></div>
+          <div class="example-header__copy"><p class="section-intro">The experience began with the job-site address. It identified duplicate records, connected existing or past customers and projects, and prefilled known occupancy, customer, and dwelling details before the intake continued.</p><p class="status-note status-note--quote"><span>This was more than a change to the form. Engineering reconstructed the database and backend so the address connected the property, customer relationships, project history, and new intake.</span></p></div>
+        </div>
+        <ol class="flow" aria-label="Implementation-ready Lead Intake workflow" data-reveal><li><strong>Address</strong><span>Begin with the single identifier shared by the property, people, projects, and history.</span></li><li><strong>Match and history</strong><span>Find duplicate addresses, customer relationships, existing or past customers, prior projects, and property history.</span></li><li><strong>Contact and association</strong><span>Confirm who is calling and how the person is associated with the property and customer.</span></li><li><strong>Severity</strong><span>Distinguish emergency from standard response.</span></li><li><strong>Job site and scope</strong><span>Prefill known occupancy, customer, and dwelling details, then capture access and job scope.</span></li><li><strong>Loss details</strong><span>Record what happened, affected areas, dates, and additional context.</span></li><li><strong>Insurance</strong><span>Capture available carrier, claim, policy, or self-pay information.</span></li><li><strong>Review and verify</strong><span>Confirm that required information is complete and accurate before submission.</span></li><li><strong>Lead management</strong><span>Submit the verified lead into the lead-management workflow.</span></li><li><strong>Lead automation</strong><span>Create the project, choose who to notify, and assign the technician.</span></li></ol>
+        <div class="evidence-grid" data-reveal>
+          <article class="evidence-card"><h3>The address connected the system</h3><p>One verified address connected the property to existing or past customers, project history, contact relationships, occupancy, and dwelling details.</p></article>
+          <article class="evidence-card"><h3>Urgency changed the response</h3><p>Emergency and non-emergency choices made severity visible early enough to guide response expectations and team coordination.</p></article>
+          <article class="evidence-card"><h3>Optional information did not stop progress</h3><p>Insurance was encouraged but could be added later, allowing teams to begin the intake even when every detail was not yet available.</p></article>
+          <article class="evidence-card"><h3>Completeness was visible</h3><p>A final information summary grouped missing and completed requirements so users could resolve gaps without searching back through the full form.</p></article>
+          <article class="evidence-card"><h3>Incomplete work was protected</h3><p>A persistent Save Draft action supported interruption and uncertainty during an initial loss call. It also gave the contractor an opportunity to follow up on the sale.</p></article>
+          <article class="evidence-card"><h3>Intake led to the next action</h3><p>The experience connected captured information to immediate downstream work, including task creation. These actions were designed for automation so the system could reduce the administrative burden on the user.</p></article>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<section aria-label="Putting it into practice: XactRestore Lead Intake" class="beat beat--light">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">Putting It Into Practice</p>
-      <h2 class="headline">XactRestore <em>Lead Intake</em></h2>
-
-      <h3 class="subhead" style="margin-top:32px;">The Team</h3>
-      <p class="tags" style="margin-top:16px;"><span>Product Manager</span><span>Lead Engineer</span><span>Engineer</span><span>Senior UX Designer</span></p>
-
-      <p class="prose" style="margin-top:22px;">We worked closely as a team rather than treating design, product, and engineering as separate stages of the process.</p>
-      <p class="prose">Research helped us understand the user's problem. Product brought product strategy, requirements, and business context. Engineering brought technical knowledge, constraints, and opportunities. I represented the user and designed the experience while working with the team to find solutions we could all stand behind.</p>
-      <p class="principle__foot">Better decisions happen when the disciplines solving the problem are involved early enough to shape the answer.</p>
-    </div>
-  </div>
-</section>
-
-<section aria-label="The property was the constant" class="beat beat--charcoal">
-  <div class="wrap">
-    <p class="prose" style="font-family:var(--font-display);font-weight:700;" data-reveal>Restoration intake begins during a complicated moment.</p>
-    <p class="prose" style="margin-top:14px;" data-reveal>Someone may be dealing with water, fire, mold, or storm damage while an office employee is simultaneously trying to understand what happened, capture accurate information, determine urgency, and prepare the next team to respond.</p>
-    <p class="prose" style="margin-top:14px;font-family:var(--font-display);font-weight:700;" data-reveal>Research showed us something important:</p>
-    <p class="statement statement--mega" style="margin-top:30px;" data-reveal>The property was the constant.</p>
-    <p class="statement" style="margin-top:10px;" data-reveal><em>People weren't.</em></p>
-    <div style="margin-top:24px;" data-reveal>
-      <p class="prose">A property could have different owners, tenants, property managers, callers, onsite contacts, or insurance relationships over its history.</p>
-      <p class="prose" style="margin-top:14px;">But the job-site address remained the finite location where the work occurred.</p>
-      <p class="prose" style="margin-top:14px;"><strong>That changed the architecture of the experience.</strong></p>
-    </div>
-  </div>
-</section>
-
-<section aria-label="What we learned and the problem" class="beat beat--light">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <div class="split">
-        <div>
-          <p class="kicker">What We Learned</p>
-          <h3 class="headline">The job-site address was the strongest anchor for the lead.</h3>
-          <p class="prose">It could connect:</p>
-          <p class="chips"><span>Property History</span><span>Existing Contacts</span><span>Prior Projects</span><span>Service Area</span><span>Dispatch</span><span>Duplicate Detection</span></p>
-          <p class="prose">At the same time, research showed that the person calling might not be the owner, customer, or person onsite.</p>
-          <p class="prose"><strong>One property could have many people associated with it.</strong></p>
-        </div>
-        <div>
-          <p class="kicker">The Problem</p>
-          <h3 class="headline">A contact-first workflow didn't adequately represent those relationships.</h3>
-          <p class="prose">Starting with a person's name could lead the system toward the wrong question:</p>
-          <p class="statement statement--minor"><em>&ldquo;Who is this?&rdquo;</em></p>
-          <p class="prose">When the more useful first question was:</p>
-          <p class="statement statement--minor"><em>&ldquo;Where is the work happening?&rdquo;</em></p>
-          <p class="prose">Once we knew the property, we could understand the people associated with it in context.</p>
-        </div>
+    </section>
+    <section class="section section--blue" aria-labelledby="tasks-title">
+      <div class="wrap">
+        <p class="eyebrow">Designing across roles</p><h2 class="section-title" id="tasks-title">Task coordination from the office to the field.</h2><p class="section-intro">I also worked on task experiences for two different working contexts: administrators coordinating the work and technicians carrying it out in the field.</p>
+        <div class="task-system" data-reveal><article class="task-role"><p class="card__number">ADMINISTRATIVE EXPERIENCE</p><h3>Create and manage tasks</h3><p>A task-creation and management feature for administrative users coordinating work. The administrator managed the project, created and prioritized tasks, and the application notified the technician of changes.</p></article><div class="task-bridge" aria-hidden="true">↔</div><article class="task-role"><p class="card__number">TECHNICIAN EXPERIENCE</p><h3>Manage field tasks</h3><p>A technician workflow that prioritized relevant task, property, and job-site information in the context of field work. The technician completed tasks, collected job-site information, documented the work, and recorded instrument data.</p></article></div>
+        <p class="task-foot">These experiences required the product to support different responsibilities and environments while maintaining a coherent task model.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<section aria-label="What we designed: start with the address" class="beat beat--mist">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">What We Designed</p>
-      <h2 class="headline">Start with the address.</h2>
-      <p class="prose">Search for the job site before creating another record.</p>
-
-      <h3 class="subhead" style="margin-top:32px;">The Workflow</h3>
-      <ol class="flow" style="margin-top:16px;">
-        <li><div class="term">Address</div><p class="desc">The user begins typing the job-site address. The field auto-completes possible addresses and returns a verified address for the property.</p></li>
-        <li><div class="term">Property Match</div><p class="desc">Does this verified property already exist in XactRestore?</p></li>
-        <li><div class="term">Associated Contacts</div><p class="desc">Who has been connected to this property?</p></li>
-        <li><div class="term">Current Relationships</div><p class="desc">Who is calling? Who is the customer? Who is onsite?</p></li>
-        <li><div class="term">Loss + Urgency</div><p class="desc">What happened and what matters right now?</p></li>
-        <li><div class="term">Assignment + Handoff</div><p class="desc">Does the next person have what they need to act?</p></li>
-      </ol>
-
-      <p class="prose" style="margin-top:30px;">If a property already existed, the experience could surface its associated contacts and history.</p>
-      <p class="prose">Users could select an existing person, update information, add another relationship, or explicitly resolve a possible duplicate rather than allowing the system to silently merge records.</p>
-    </div>
-  </div>
-</section>
-
-<section aria-label="We were reorganizing the experience" class="beat beat--charcoal">
-  <div class="wrap" style="text-align:center;">
-    <h3 class="punch" style="border-left:none;padding-left:0;max-width:none;" data-reveal>One research insight changed the architecture of the experience.</h3>
-    <p class="prose" style="margin-top:14px;max-width:56ch;margin-inline:auto;" data-reveal>We weren't simply reorganizing fields.</p>
-    <p class="statement" style="margin-top:24px;max-width:none;" data-reveal>We were reorganizing the experience around how the work actually existed in the real world.</p>
-  </div>
-</section>
-
-<section aria-label="The opportunity: automate more of the work around intake" class="beat beat--void">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">The Opportunity</p>
-      <h2 class="headline">Automate More of the Work <em>Around Intake</em></h2>
-      <p class="statement" style="margin-top:20px;">Contractors didn't need more administration. They needed the system to do more of the work.</p>
-      <p class="prose" style="margin-top:20px;">Research pointed toward a larger opportunity: use automation to reduce the administrative work surrounding intake.</p>
-      <p class="prose">The goal wasn't automation for its own sake.</p>
-      <p class="prose">It was to give contractors more time to focus on customers and profitable work while reducing unnecessary administrative effort and the potential for downstream rework.</p>
-      <div class="callout">
-        <p>This represented an opportunity and design direction, not a claimed production result.</p>
+    </section>
+    <section class="section section--void" aria-labelledby="automation-title">
+      <div class="wrap opportunity-grid">
+        <div><p class="eyebrow">Reducing administrative burden</p><h2 class="section-title" id="automation-title">Contractors did not need more administration. They needed the system to do more of the work.</h2><p class="section-intro">Research pointed toward a larger opportunity: use automation to reduce the administrative work surrounding intake.</p><p class="section-intro">The goal wasn't automation for its own sake.</p><p class="section-intro">It was to give contractors more time to focus on customers and profitable work while reducing unnecessary administrative effort and the potential for downstream rework.</p><p class="evidence-note">The final design included Save Draft, validation, duplicate review, project creation, personnel notifications, and technician assignment. The remaining concepts show the broader direction explored for reducing administrative work.</p></div>
+        <ul class="opportunity-list" data-reveal><li><strong>Address-first foundation</strong><span>Use the verified job-site address to connect known property, customer, occupancy, dwelling, and project information before asking the user to enter it again.</span></li><li><strong>Duplicate resolution</strong><span>Check duplicate addresses and their customer relationships before creating another contact, customer, or project.</span></li><li><strong>Save Draft</strong><span>Preserve incomplete information for completion later and support follow-up on the sales opportunity.</span></li><li><strong>Intake validation</strong><span>Check that required information is complete and accurate. A short script also helped the user read back and confirm the required details.</span></li><li><strong>Lead automation</strong><span>After submission, ask which personnel to notify and which technician to assign, create the project, and move the lead into management.</span></li><li><strong>Progressive disclosure</strong><span>Ask for information when it becomes relevant.</span></li><li><strong>Show required fields only</strong><span>Let the user deliberately hide non-required text fields during intake.</span></li><li><strong>Integrations</strong><span>Prepare accurate intake information for connected XactWare applications and eligible CleanClaims workflows.</span></li></ul>
       </div>
-
-      <p class="kicker" style="margin-top:56px;">The experience could support that direction through:</p>
-      <ul class="index-list" style="margin-top:16px;">
-        <li><div class="term">Progressive disclosure</div><p class="desc">Ask for information when it becomes relevant.</p></li>
-        <li><div class="term">Required-fields-only</div><p class="desc">When a caller is frantic, users can show only the fields required to create an actionable lead, streamlining intake and making the process faster.</p></li>
-        <li><div class="term">Save Draft</div><p class="desc">Allow incomplete information to be finished later without losing what was already known.</p></li>
-        <li><div class="term">Duplicate review</div><p class="desc">Surface possible matches and give users enough context to make the decision.</p></li>
-        <li><div class="term">Handoff summary</div><p class="desc">Automate the handoff process so the right information reaches the right team, enabling the project to move forward without unnecessary delays.</p></li>
-      </ul>
-      <p class="statement statement--minor" style="margin-top:48px;text-align:center;max-width:none;">Preserve the information the product needs while reducing the work required from the user.</p>
-    </div>
-  </div>
-</section>
-
-<section aria-label="How I elevate the process" class="beat beat--mist">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <div class="elevate">
-        <div class="elevate__item">
-          <h3 class="subhead">Fail Early: While Change Is Still Cheap</h3>
-          <p class="prose">&ldquo;Fail early&rdquo; is an Agile principle I carry into the design process. Prototype realistic workflows before we've invested heavily in building them.</p>
-          <p class="prose"><strong>The prototype isn't there to prove the design is right.</strong></p>
-          <h2 class="headline" style="margin-top:8px;">It's there to help us discover where it's wrong.</h2>
-          <p class="prose">Finding an incorrect assumption early gives the team the opportunity to learn, pivot, and test again before the cost of change becomes much greater.</p>
-          <p class="equation">Fail Early<span class="op">&rarr;</span>Learn<span class="op">&rarr;</span>Pivot<span class="op">&rarr;</span>Test Again</p>
-        </div>
-        <div class="elevate__item">
-          <h3 class="subhead">Solve It Together</h3>
-          <ul class="bullets" style="margin-top:24px;">
-            <li>Bring Product, Engineering, and Design into the problem while the solution is still open.</li>
-            <li>Give each discipline a voice.</li>
-            <li>Challenge assumptions together.</li>
-          </ul>
-          <h3 class="punch">Shared participation creates shared ownership.</h3>
-        </div>
-        <div class="elevate__item">
-          <h3 class="subhead">Ship Intentionally</h3>
-          <p class="prose">Software is always evolving, but what we deliver should feel intentional and complete, not like we're still working on it.</p>
-          <h3 class="punch">Every release should feel like the product we intended to build today, even when we already know what comes next.</h3>
-        </div>
-        <div class="elevate__item">
-          <h3 class="subhead">Think Beyond the Feature</h3>
-          <ul class="bullets" style="margin-top:24px;">
-            <li>Ask what happens upstream, downstream, and six releases from now.</li>
-            <li>What pattern are we establishing?</li>
-            <li>Who will use this information next?</li>
-            <li>Can the solution scale?</li>
-          </ul>
-          <h3 class="punch">A feature can solve today's problem and still create tomorrow's inconsistency.</h3>
-        </div>
+    </section>
+    <section class="section" id="approach" aria-labelledby="approach-title">
+      <div class="wrap">
+        <p class="eyebrow">How I work</p><h2 class="section-title" id="approach-title">Design Thinking is the foundation. Senior design keeps the larger system in view.</h2><p class="section-intro">I use a familiar human-centered process while continuously considering Product, Engineering, technical reality, business goals, effort, and what today's decisions may affect next.</p>
+        <div class="process-lens" aria-label="Four perspectives maintained throughout the design process">User <span>↔</span> Product <span>↔</span> Engineering <span>↔</span> Business</div>
+        <ol class="process" data-reveal><li><strong>Recognize</strong><p>Understand the product, goals, technology, constraints, and surrounding system.</p></li><li><strong>Empathize and define</strong><p>Learn how people work and identify the underlying problem, not only its symptoms.</p></li><li><strong>Ideate and align</strong><p>Explore alternatives with Product and Engineering while the solution is still open.</p></li><li><strong>Simplify</strong><p>Determine what is required now, what can wait, and what the product can handle for the user.</p></li><li><strong>Prototype and test</strong><p>Make assumptions visible while they are still inexpensive to challenge and change.</p></li><li><strong>Ship and learn</strong><p>Deliver an intentional experience, then use feedback and behavior to inform what comes next.</p></li></ol>
+        <div class="principles" data-reveal><article class="principle"><h3>See the whole product</h3><p class="principle__lead">Advocate for the user. Understand the business. Design for both.</p><p>Senior design looks beyond the screen. I consider user needs, product strategy, engineering effort, and how today's decisions shape tomorrow's product.</p></article><article class="principle"><h3>Keep the capability. Remove the burden.</h3><p class="principle__lead">Make complexity feel simple.</p><p>The system can be complicated. The experience should not be. I ask what users need now, what can wait, and what we can eliminate or automate.</p></article><article class="principle"><h3>Advocate strongly. Hold the solution loosely.</h3><p class="principle__lead">Research gives us evidence. Collaboration gives us better answers.</p><p>I advocate for the user, not my first design. I challenge assumptions, surface technical opportunities, and work with Product and Engineering toward a solution the team owns together.</p></article></div>
       </div>
-    </div>
-  </div>
-</section>
-
-<section aria-label="Selected areas of my Verisk work" class="beat beat--light">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">Selected Areas of My Verisk Work</p>
-      <h2 class="headline">Across XactRestore</h2>
-      <p class="prose" style="max-width:none;">The Lead Intake example represents one part of my work across XactRestore.</p>
-      <ul class="index-list" style="margin-top:28px;">
-        <li><div class="term">Lead Intake &amp; Management</div><p class="desc">Complex information capture, lead qualification, relationships, status, and workflow.</p></li>
-        <li><div class="term">Loss &amp; Severity</div><p class="desc">Loss type, cause, category, class, emergency conditions, affected areas, and job context.</p></li>
-        <li><div class="term">Property &amp; Job-Site Experiences</div><p class="desc">Property information, address assistance and validation, contact relationships, and contextual property views.</p></li>
-        <li><div class="term">Scheduling &amp; Task Coordination</div><p class="desc">Team availability, assignments, recurring tasks, scheduling, blockers, and next actions.</p></li>
-        <li><div class="term">Field Technician Experiences</div><p class="desc">Prioritizing the information and actions technicians need while performing work in the field.</p></li>
-        <li><div class="term">Forms &amp; Data Entry</div><p class="desc">Validation, phone formatting, error prevention, progressive information, and reducing unnecessary input.</p></li>
-        <li><div class="term">Insurance &amp; Job Information</div><p class="desc">Supporting insurance information, job scope, and the information needed as a lead becomes active work.</p></li>
-        <li><div class="term">Accessibility &amp; Product Consistency</div><p class="desc">WCAG 2.2 considerations, accessible color tokens, reusable interaction patterns, and consistency across an evolving enterprise product.</p></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section aria-label="Complexity at ecosystem scale" class="beat beat--void">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">Complexity Gets More Interesting at Ecosystem Scale</p>
-      <h2 class="headline">The transitions become part of the product.</h2>
-      <p class="prose">The problems I've been solving become even more interesting when complexity expands beyond one application.</p>
-      <p class="prose">When hardware, software, content, AI, services, and community become part of one experience, designing each part well isn't enough.</p>
-
-      <p class="equation" style="margin-top:24px;">Hardware<span class="op">&times;</span>Software<span class="op">&times;</span>Content<span class="op">&times;</span>AI<span class="op">&times;</span>Services<span class="op">&times;</span>Community</p>
-      <p class="equation" style="margin-top:14px;">Inspiration<span class="op">&rarr;</span>Idea<span class="op">&rarr;</span>Create<span class="op">&rarr;</span>Make<span class="op">&rarr;</span>Share<span class="op">&rarr;</span>Inspiration&nbsp;&#8635;</p>
-
-      <p class="prose" style="margin-top:56px;">A person shouldn't have to stop their creative momentum to understand where one product, technology, or capability ends and another begins.</p>
-      <p class="prose">As the ecosystem becomes more powerful, UX has another responsibility:</p>
-      <p class="statement" style="margin-top:12px;">Keep the power. <em>Hide the complexity.</em></p>
-      <p class="prose" style="margin-top:18px;">When that works, people don't experience the technologies underneath the ecosystem.</p>
-      <p class="prose"><strong>They experience what they're capable of creating with it.</strong></p>
-    </div>
-  </div>
-</section>
-
-<section aria-label="At the end of the day" class="beat beat--light">
-  <div class="wrap beat__grid">
-    <div class="content" data-reveal>
-      <p class="kicker">At the End of the Day</p>
-      <h2 class="headline">Great UX and business success are <em>not opposing goals.</em></h2>
-
-      <div style="margin-top:44px;">
-        <p class="prose">My responsibility is to advocate for the user.</p>
-        <p class="prose" style="margin-top:14px;">But user success and business success aren't independent.</p>
-        <h3 class="reflect" style="margin-top:28px;text-align:center;">They're symbiotic.</h3>
-        <p class="prose" style="margin-top:28px;">A product that fails its users cannot sustain the business.</p>
-        <p class="prose" style="margin-top:14px;">A solution the business cannot sustain cannot continue creating value for its users.</p>
-        <p class="equation" style="margin-top:24px;">User Success<span class="op">&harr;</span>Business Success</p>
-      </div>
-
-      <div style="margin-top:52px;">
-        <p class="prose">That is why I look beyond the interface, to Product, Engineering, technology, effort, cost, strategy, and the business itself.</p>
-        <p class="prose" style="margin-top:14px;">Senior UX means helping Product, Engineering, Design, and the business find the solution where those needs align.</p>
-      </div>
-
-      <div style="margin-top:52px;">
-        <p class="statement statement--minor">The job isn't to choose one side.</p>
-        <p class="statement--sub" style="margin-top:10px;">It's to find the solution that brings them into alignment.</p>
-        <p class="prose" style="margin-top:18px;">Because that's where sustainable products are built.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section aria-label="Closing statement" class="beat beat--void" style="padding-block:110px;">
-  <div class="wrap" style="text-align:center;">
-    <p class="statement statement--mega" data-reveal style="max-width:none;margin:0 auto;">Technology can be complicated.<br><em>The experience doesn't have to be.</em></p>
-  </div>
-</section>
-</main>
-
-<script>
-(function(){
-  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  var progress = document.getElementById('scrollProgress');
-  if (progress){
-    var updateProgress = function(){
-      var doc = document.documentElement;
-      var scrollable = doc.scrollHeight - doc.clientHeight;
-      var pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
-      progress.style.width = pct + '%';
-    };
-    window.addEventListener('scroll', updateProgress, {passive:true});
-    window.addEventListener('resize', updateProgress);
-    updateProgress();
-  }
-
-  document.querySelectorAll('[data-anim]').forEach(function(el){ el.classList.add('run'); });
-  var hr = document.querySelector('.hero-rail');
-  if (hr) hr.classList.add('run');
-
-  if (reduced) return;
-
-  var revealEls = document.querySelectorAll('[data-reveal]');
-  revealEls.forEach(function(el){ el.classList.add('js-pre'); });
-
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (entry.isIntersecting){
-        entry.target.classList.add('is-visible');
-        io.unobserve(entry.target);
-      }
-    });
-  }, {threshold:.12, rootMargin:'0px 0px -8% 0px'});
-
-  revealEls.forEach(function(el){ io.observe(el); });
-})();
-</script>
-
+      <div class="success-connection" data-reveal><div class="success-connection__inner"><h3>User success and business success are connected.</h3><div class="success-connection__copy"><p>My responsibility is to advocate for the user, but user success and business success are not independent. A product that fails its users cannot sustain the business. A solution the business cannot sustain cannot continue creating value for its users.</p><p>That is why I look beyond the interface to Product, Engineering, technology, effort, cost, strategy, and the business itself. The job is to find the solution that brings those needs into alignment.</p></div></div></div>
+    </section>
+    <section class="section section--void closing" aria-labelledby="closing-title">
+      <div class="wrap" data-reveal><p class="eyebrow">What I bring</p><h2 id="closing-title">I design the connections, not only the screens.</h2><p>Senior UX is not only about solving the interface. It is about bringing the right disciplines together, learning before change becomes expensive, and making decisions that strengthen the whole product.</p><div class="closing-principles"><article class="closing-principle"><span class="closing-principle__number">01</span><h3>Solve it together</h3><p>Bring Product, Engineering, and UX into the problem while the solution is still open. Giving each discipline a voice creates shared participation, shared ownership, and a better product.</p></article><article class="closing-principle"><span class="closing-principle__number">02</span><h3>Fail early while change is still inexpensive</h3><p>A prototype is not there to prove the design is right. It helps the team find incorrect assumptions, learn, adjust, and test again before the cost of change grows.</p></article><article class="closing-principle"><span class="closing-principle__number">03</span><h3>Ship intentionally</h3><p>Software keeps evolving, but each release should feel complete, coherent, and intentional rather than unfinished.</p></article><article class="closing-principle"><span class="closing-principle__number">04</span><h3>Think beyond the feature</h3><p>Consider what happens before and after a feature, the pattern it establishes, who uses the information next, and whether the solution can scale.</p></article></div><div class="hero__actions"><a class="button" href="mailto:carl@carlishii.com">Contact Carl</a><a class="button button--secondary" href="https://carlishii.com/ux-ui-resume/">View résumé</a><a class="button button--secondary" href="https://carlishii.com/">View portfolio</a></div></div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="wrap"><p>© Carl Ishii 2026 · Senior UX Designer</p><p><a href="mailto:carl@carlishii.com">carl@carlishii.com</a></p></div></footer>
+</body>
 </html>
